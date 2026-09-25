@@ -52,3 +52,9 @@ npm ci
 npm run typecheck && npm run lint && npm test
 cp .env.example .env && npm run dev
 ```
+
+## Testing
+
+- Unit tests mock `fetch` for the LemonLDAP calls and call the handlers directly.
+- The LemonLDAP client was run once against LemonLDAP::NG 2.20.2: admin login, listing and deleting global sessions, a replay, the 500 on a session already gone, and the 302 on an expired admin cookie. Deleting a real offline session was not tried.
+- The service has not been run against a live RabbitMQ broker yet. Queue and dead-letter declaration come from `@linagora/rabbitmq-client`.
