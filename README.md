@@ -57,4 +57,4 @@ cp .env.example .env && npm run dev
 
 - Unit tests mock `fetch` for the LemonLDAP calls and call the handlers directly.
 - The LemonLDAP client was run once against LemonLDAP::NG 2.20.2: admin login, listing and deleting global sessions, a replay, the 500 on a session already gone, and the 302 on an expired admin cookie. Deleting a real offline session was not tried.
-- The service has not been run against a live RabbitMQ broker yet. Queue and dead-letter declaration come from `@linagora/rabbitmq-client`.
+- The Docker image was run once against RabbitMQ 3 and that LemonLDAP. It declared the three quorum queues and their `.dlq`, acked a `user.deleted` for a user with no session, and dead-lettered a `b2b.member.disabled` without `email` after 3 retries.
