@@ -23,7 +23,7 @@ sequenceDiagram
 - Both session kinds are listed on every message:
   - `global`: the user's SSO sessions.
   - `offline`: OIDC offline sessions, which hold refresh tokens.
-- Sessions are looked up by `_whatToTrace`, so LemonLDAP::NG has to trace users by email address.
+- Sessions are looked up by `_whatToTrace` with the lowercased address, so LemonLDAP::NG has to trace users by lowercased email address.
 
 ## When is a message done
 

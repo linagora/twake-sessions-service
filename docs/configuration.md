@@ -9,10 +9,10 @@ All settings are environment variables. The service checks them at startup and e
   - `exchange`: the exchange to bind to.
   - `routingKey`: the routing key to bind.
   - `queue`: the queue to declare and consume.
-  - `emailField`: the message field holding the address, `email` by default.
+  - `emailField`: the top-level message field holding the address, `email` by default. Nested paths such as `user.email` are not supported.
 - `RABBITMQ_MAX_RETRIES`: attempts before a failed message is dead-lettered, 3 by default.
 - `RABBITMQ_RETRY_DELAY`: milliseconds between attempts, 1000 by default.
-- `RABBITMQ_PREFETCH`: messages handled at once, 10 by default.
+- `RABBITMQ_PREFETCH`: messages handled at once per subscription, 10 by default.
 
 Two subscriptions reading different fields:
 
@@ -31,7 +31,7 @@ SUBSCRIPTIONS='[
 - `LLNG_COOKIE_NAME`: the SSO cookie name, `lemonldap` by default.
 - `SESSIONS_MAX_PASSES`: rounds of deletes before a message fails, 3 by default.
 
-LemonLDAP::NG has to trace users by email address (`whatToTrace`), since that is how sessions are looked up.
+LemonLDAP::NG has to trace users by lowercased email address, for example `whatToTrace` set to `lc($mail)`, since sessions are looked up with the lowercased address.
 
 ## Service
 
@@ -42,5 +42,5 @@ LemonLDAP::NG has to trace users by email address (`whatToTrace`), since that is
 
 - The Docker image runs `node dist/index.js` as the `node` user.
 - `GET /healthz` answers 200 while the RabbitMQ connection is up, 503 otherwise.
-- On `SIGTERM` or `SIGINT` the service stops consuming, closes the connection and exits.
+- On `SIGTERM` or `SIGINT` the service waits up to 5 seconds for in-flight messages, closes the connection and exits. A message still unacknowledged at that point is redelivered.
 - `RABBITMQ_URL` and `LLNG_ADMIN_PASSWORD` are secrets.
